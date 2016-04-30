@@ -2,9 +2,9 @@
 from __future__ import division
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import math
-from routines.integral_input import __init_integrals__ 
+from routines.integral_input import __init_integrals__
 import routines.scf as scf
 import routines.ao2mo as ao2mo
 import routines.mp2 as mp2

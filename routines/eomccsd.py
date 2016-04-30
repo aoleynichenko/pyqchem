@@ -4,7 +4,7 @@ import sys
 #import re
 import math
 import time
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 
 #######################################################
@@ -265,8 +265,8 @@ def eomccsd(Nelec,dim,fs,ints,ts,td):
       if (excitation > 1.0) and (excitation < 50.0):
         print (excitation)
         continue
-    plt.imshow(eomMatrix,interpolation='nearest',cmap='jet',alpha=0.75)
-    plt.colorbar()
-    plt.savefig('eom-ccsd.png',bbox_inches='tight')
-    plt.close()
+    #plt.imshow(eomMatrix,interpolation='nearest',cmap='jet',alpha=0.75)
+    #plt.colorbar()
+    #plt.savefig('eom-ccsd.png',bbox_inches='tight')
+    #plt.close()
     del eomMatrix, eomEVal, eomEVec
