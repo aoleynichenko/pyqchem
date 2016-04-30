@@ -1,2 +1,2 @@
 # pyqchem
-This code is based upon the Python-written quantum chemistry program by Joshua Goings (https://github.com/jjgoings/pyqchem)
+This code is based on the Python-written quantum chemistry program of Joshua Goings (https://github.com/jjgoings/pyqchem)
