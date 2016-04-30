@@ -3,6 +3,7 @@
 from __future__ import division
 import math
 import numpy as np
+import time
 
 ####################################
 #
@@ -32,6 +33,10 @@ def transform_ao2mo(dim,twoe,C,E):
     #   2-E INTEGRAL TRANSFORM TO SPATIAL MO BASIS
     #
     ####################################################
+    print '\n            ***************************************'
+    print '            *      Four-index transformation      *'
+    print '            *  dim = %-10d                   * ' % (dim)
+    print '            *  Started:  %20s *' % (time.ctime())
 
     # put AO ERI into 4-D array for easy indexing
     INT = np.zeros((dim,dim,dim,dim))
@@ -94,6 +99,8 @@ def transform_ao2mo(dim,twoe,C,E):
     for i in range(0,dim*2):
 	fs[i] = E[i//2]
 
-    fs = np.diag(fs)
-    
+    fs = np.diag(fs) 
+    print '            *  Finished: %20s *' % (time.ctime())
+    print '            ***************************************\n'
+
     return ints, fs

@@ -21,9 +21,10 @@ import routines.eommbptd as eommbptd
 do_DIIS      = True 
 do_ao2mo     = True
 do_mp2       = True 
-do_cistdhf   = True
-do_ccsd      = True 
-do_eomccsd   = True
+do_mp3       = True
+do_cistdhf   = False
+do_ccsd      = False
+do_eomccsd   = False
 do_eommbpt2  = False
 do_eommbptp2 = False
 do_eommbptd  = False
@@ -61,18 +62,19 @@ print "Total E(RHF): ", EN+ENUC,"a.u."
 print "\t*** End of SCF Iteration\n"
 
 if do_ao2mo == True:
-    print "\t*** Begin AO to MO <pq||rs> transformation"
     ints,fs = ao2mo.transform_ao2mo(dim,twoe,C,orbitalE)
-    print "\t*** Finished AO to MO <pq||rs> tranformation\n"
 
 
 if do_mp2 == True:
     # Begin MP2 calculation
-    print "\t*** Begin MP2 Energy calculation"
     mp2_corr = mp2.mp2_energy(dim,Nelec,ints,orbitalE)
-    print "MP2 corr: ",mp2_corr,"a.u."
-    print "Total E(MP2): ",mp2_corr+EN+ENUC,"a.u."
-    print "\t*** Finished MP2 Energy calculation"
+    print "Ecorr(MP2)   = ",mp2_corr," a.u."
+    print "Total E(MP2) = ",mp2_corr+EN+ENUC," a.u."
+    if do_mp3 == True:
+        mp3_corr = mp2.mp3_energy(dim,Nelec,ints,orbitalE)
+        print "Ecorr(MP3)   = ",mp3_corr," a.u."
+        print "Total E(MP3) = ",mp2_corr+mp3_corr+EN+ENUC," a.u.\n"
+    
 
 if do_cistdhf == True:
     print "\n\t*** Begin CIS/TDHF calculation"
