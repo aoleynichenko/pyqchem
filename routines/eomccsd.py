@@ -7,6 +7,16 @@ import time
 #import matplotlib.pyplot as plt
 import numpy as np
 
+def print_matrix(name, M):
+  vsize = M.shape[0]
+  hsize = M.shape[1]
+  print "\t\t%s   %s" % (name, str(M.shape))
+  for i in range(0,vsize):
+    for j in range(0,hsize):
+      print "%8.4f" % M[i,j],
+    print
+  print "\n"
+
 #######################################################
 #
 #  EOM-CCSD CALCULATION
@@ -14,6 +24,7 @@ import numpy as np
 #######################################################
 
 def eomccsd(Nelec,dim,fs,ints,ts,td):
+    print_eomMatrix = True
     dim = dim*2
     NOV = Nelec*(dim-Nelec)
     print "\t\t** Constructing singles-singles block" 
@@ -252,19 +263,25 @@ def eomccsd(Nelec,dim,fs,ints,ts,td):
                           HDD[iajb,kcld] += (a==c)*(i==l)*(b==d)*ints[m,k,e,f]*ts[f,j]*ts[e,m] - \
                                             (a==c)*(j==l)*(b==d)*ints[m,k,e,f]*ts[f,i]*ts[e,m]# 75
     t7 = time.time()
-    print "\t\t** Finished doubles-doubles block. Time: ",t7-t6 
+    print "\t\t** Finished doubles-doubles block. Time: ",t7-t6,"\n"
 
+    #HDD = np.diag(np.diag(HDD))
     eomMatrix = np.bmat([[HSS,HSD],[HDS,HDD]])
-
-    print "\t\t** Begin full diagonalization"
+    if print_eomMatrix == True:
+      print_matrix("< S | (HN)c,open | S >", HSS)
+      print_matrix("< S | (HN)c,open | D >", HSD)
+      print_matrix("< D | (HN)c,open | S >", HDS)
+      print_matrix("< D | (HN)c,open | D >", HDD)
+     
+    print "\n\t\t** Begin full diagonalization"
     print "\t\t * Matrix dimension:  ", str(len(eomMatrix)) + "x" + str(len(eomMatrix)) 
     eomEVal,eomEVec = np.linalg.eig(eomMatrix)
 
     print "\nExcitations (eV):"
     for excitation in (np.sort(np.real(eomEVal))*27.21138386):
-      if (excitation > 1.0) and (excitation < 50.0):
+      #if (excitation > 1.0) and (excitation < 50.0):
         print (excitation)
-        continue
+        #continue
     #plt.imshow(eomMatrix,interpolation='nearest',cmap='jet',alpha=0.75)
     #plt.colorbar()
     #plt.savefig('eom-ccsd.png',bbox_inches='tight')

@@ -21,10 +21,10 @@ import routines.eommbptd as eommbptd
 do_DIIS      = True 
 do_ao2mo     = True
 do_mp2       = True 
-do_mp3       = True
+do_mp3       = False
 do_cistdhf   = False
-do_ccsd      = False
-do_eomccsd   = False
+do_ccsd      = True
+do_eomccsd   = True
 do_eommbpt2  = False
 do_eommbptp2 = False
 do_eommbptd  = False
