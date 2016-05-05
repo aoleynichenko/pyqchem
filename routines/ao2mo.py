@@ -33,10 +33,9 @@ def transform_ao2mo(dim,twoe,C,E):
     #   2-E INTEGRAL TRANSFORM TO SPATIAL MO BASIS
     #
     ####################################################
-    print '\n            ***************************************'
-    print '            *      Four-index transformation      *'
-    print '            *  dim = %-10d                   * ' % (dim)
-    print '            *  Started:  %20s *' % (time.ctime())
+    print '\tFour-index transformation'
+    print '\tdim = %-10d' % (dim)
+    t0 = time.time()
 
     # put AO ERI into 4-D array for easy indexing
     INT = np.zeros((dim,dim,dim,dim))
@@ -100,7 +99,6 @@ def transform_ao2mo(dim,twoe,C,E):
 	fs[i] = E[i//2]
 
     fs = np.diag(fs) 
-    print '            *  Finished: %20s *' % (time.ctime())
-    print '            ***************************************\n'
-
+    print '\tDone in %.3f sec\n' % (time.time()-t0)
     return ints, fs
+

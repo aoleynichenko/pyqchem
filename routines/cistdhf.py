@@ -26,6 +26,7 @@ def cistdhf(Nelec,dim,fs,ints,printnum):
 	    J = J+1
 	    A[I,J] = (fs[a,a] - fs[i,i]) * ( i == j ) * (a == b) + ints[a,j,i,b]
 	    B[I,J] =  ints[a,b,i,j]
+    print A
 
     #print B
     # Solve CIS matrix equation

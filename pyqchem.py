@@ -6,6 +6,7 @@ import numpy as np
 import math
 from routines.integral_input import __init_integrals__
 import routines.scf as scf
+import routines.detci.detci as detci
 import routines.ao2mo as ao2mo
 import routines.mp2 as mp2
 import routines.cistdhf as cistdhf
@@ -18,13 +19,15 @@ import routines.eommbptd as eommbptd
 """ Edit below to perform the calculation desired
 """
 
-do_DIIS      = True 
+do_DIIS      = True
 do_ao2mo     = True
-do_mp2       = True 
+do_mp2       = False
 do_mp3       = False
+do_cis       = True
+do_dci       = False
 do_cistdhf   = False
-do_ccsd      = True
-do_eomccsd   = True
+do_ccsd      = False
+do_eomccsd   = False
 do_eommbpt2  = False
 do_eommbptp2 = False
 do_eommbptd  = False
@@ -53,8 +56,8 @@ print "\n\t*** Started creation of one- and two- electron integrals"
 ENUC,Nelec,dim,S,T,V,Hcore,twoe = __init_integrals__(LOCATION)
 
 print "\t*** Finished creation of one- and two- electron integrals\n"
-# do SCF iteration
 
+# do SCF iteration
 print "\t*** Begin SCF iteration, convergence requested: ",convergence,"a.u."
 EN,orbitalE,C,P,F = scf.scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS)
 
@@ -75,6 +78,8 @@ if do_mp2 == True:
         print "Ecorr(MP3)   = ",mp3_corr," a.u."
         print "Total E(MP3) = ",mp2_corr+mp3_corr+EN+ENUC," a.u.\n"
     
+if do_cis == True:
+    detci.cis(EN,fs,ints,Nelec,dim)
 
 if do_cistdhf == True:
     print "\n\t*** Begin CIS/TDHF calculation"

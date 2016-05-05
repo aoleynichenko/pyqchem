@@ -4,6 +4,7 @@ from __future__ import division
 import math
 import numpy as np
 from numpy import genfromtxt
+from utils import printmat
 #import matplotlib.pyplot as plt
 
 # Symmetrize a matrix given a triangular one
@@ -43,6 +44,7 @@ def makedensity(C,P,dim,Nelec):
 
 
 # Make Fock Matrix
+# The most naive implementation, better one provided in minichem project
 def makefock(Hcore,P,dim,twoe):
     F = np.zeros((dim,dim))
     for i in range(0,dim):
@@ -75,6 +77,18 @@ def currentenergy(P,Hcore,F,dim):
             EN += 0.5*P[mu,nu]*(Hcore[mu,nu] + F[mu,nu])
     return EN
 
+def print_mos(E,C,Nelec):
+    print '\tRHF final molecular orbitals'
+    print '\t----------------------------'
+    print '  N      E\tOcc\tCoefficients'
+    dim = len(C)
+    for i in range (0,dim):
+        print "%3d%10.4f%5d" % (i+1, E[i], (2 if (i<Nelec/2) else 0)),
+        for j in range (0,dim):
+            print "%10.4f" % C[j,i],
+        print
+    print
+
 def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
     ######################################
     #
@@ -88,8 +102,7 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
      
     SVAL, SVEC = np.linalg.eigh(S)
     SVAL_minhalf = (np.diag(SVAL**(-0.5)))
-    S_minhalf = np.dot(SVEC,np.dot(SVAL_minhalf,np.transpose(SVEC)))
-    #print S_minhalf
+    X = S_minhalf = np.dot(SVEC,np.dot(SVAL_minhalf,np.transpose(SVEC)))
 
     # This is the main loop. See Szabo and Ostlund p 146. 
     # Try uncommenting the print lines to see step by step 
@@ -100,12 +113,11 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
     elif do_DIIS == False:
         print "DIIS acceleration OFF"
     P = np.zeros((dim,dim)) # P is density matrix, set intially to zero.
-    OLDE = 0.0 
-    G = np.zeros((dim,dim)) # The G matrix is used to make the Fock matrix
+    OLDE = 0.0
     num_e = 6
     ErrorSet = []
     FockSet = []
-    for j in range(0,120):
+    for j in range(0,120):    # maxiter = 120
         F = makefock(Hcore,P,dim,twoe)
         if do_DIIS == True:
             if j > 0:
@@ -131,19 +143,19 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
                     coeff = np.linalg.solve(Bmat,ZeroVec)
                 except np.linalg.linalg.LinAlgError as err:
                     if 'Singular matrix' in err.message:
-                        print '\tSingular B matrix, turing off DIIS'
+                        print '\tSingular Pulay matrix, turing off DIIS'
                         do_DIIS = False
                 else:
                     F = 0.0
                     for i in range(0,len(coeff)-1):
                         F += coeff[i]*FockSet[i]
-	
+
         # Put Fock in orthonormal AO
-        Fprime = fprime(S_minhalf,F)
+        Fprime = fprime(X,F)
         # Solve F'C' = eC'
         E,Cprime = np.linalg.eigh(Fprime)
         # C back to AO basis
-        C = np.dot(S_minhalf,Cprime)
+        C = np.dot(X,Cprime)
         P,OLDP = makedensity(C,P,dim,Nelec)
         # test for convergence. if meets criteria, exit loop and calculate properties of interest
         DELTA = deltae(currentenergy(P,Hcore,F,dim),OLDE)
@@ -152,6 +164,10 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
         OLDE = currentenergy(P,Hcore,F,dim)
         if DELTA < convergence:
             print "NUMBER ITERATIONS: ",j
+            printmat("Final Fock matrix in AO basis", F)
+            FMO = np.dot(np.transpose(C), np.dot(F, C))
+            printmat("Final Fock matrix in MO basis", FMO)
+            print_mos(E,C,Nelec)
             break
         if j == 119:
             print "SCF not converged!"
