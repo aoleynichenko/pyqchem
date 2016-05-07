@@ -76,7 +76,51 @@ def cis(E0,f,ints,Nelec,dim):
             print "%3d%10.4f" % (i+1, dE[i])
     del HSS
 
+########################################################################
+#
+#   Determinant-based configuration interaction doubles (DET-CID)
+#
+########################################################################
 
+def cid(E0,f,ints,Nelec,dim):
+    print '\n\tConfiguration Interaction Doubles (DCI)'
+    print '\t---------------------------------------'
+    print 'Reference type: RHF'
+    print 'Reference energy E0 = ', E0
+    print 'Nelec = ', Nelec
+    dim = dim*2
+    print 'dim = ', dim
+    No = Nelec
+    Nv = dim - Nelec
+    nd = 0
+    for i in range(0,Nelec):
+      for j in range(i+1,Nelec):
+        for a in range(Nelec,dim):
+          for b in range(a+1,dim):
+            nd += 1
+    #printall = False
+    print 'No of unique double-excited determinants: ', nd
+    print 'Problem size: %dx%d' % (nd+1,nd+1)
+    
+    print 'DCI matrix equations:'
+    print '( 0  B ) (1) = Ecorr*(1)'
+    print '( B+ D ) (c) =       (c)'
+    # Construction of the B block of normal-ordered Hamiltonian matrix
+    t0 = time.time()
+    B = np.zeros(nd)
+    iajb = -1
+    for i in range(0,Nelec):
+      for j in range(i+1,Nelec):
+        for a in range(Nelec,dim):
+          for b in range(a+1,dim):
+            iajb += 1
+            B[iajb] = ints[i,j,a,b]
+            
+    #print 'B = ', B
+    del B
+    
+    
+    
 
 
 

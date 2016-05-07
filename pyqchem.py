@@ -24,7 +24,7 @@ do_ao2mo     = True
 do_mp2       = False
 do_mp3       = False
 do_cis       = True
-do_dci       = False
+do_dci       = True
 do_cistdhf   = False
 do_ccsd      = False
 do_eomccsd   = False
@@ -80,6 +80,8 @@ if do_mp2 == True:
     
 if do_cis == True:
     detci.cis(EN,fs,ints,Nelec,dim)
+if do_dci == True:
+    detci.cid(EN,fs,ints,Nelec,dim)
 
 if do_cistdhf == True:
     print "\n\t*** Begin CIS/TDHF calculation"
