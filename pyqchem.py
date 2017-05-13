@@ -6,6 +6,7 @@ import numpy as np
 import math
 from routines.integral_input import __init_integrals__
 import routines.scf as scf
+import routines.ints as ints
 import routines.detci.detci as detci
 import routines.ao2mo as ao2mo
 import routines.mp2 as mp2
@@ -23,8 +24,8 @@ do_DIIS      = True
 do_ao2mo     = True
 do_mp2       = False
 do_mp3       = False
-do_cis       = True
-do_dci       = True
+do_cis       = False
+do_dci       = False
 do_cistdhf   = False
 do_ccsd      = False
 do_eomccsd   = False
@@ -48,14 +49,81 @@ LOCATION = sys.argv[1]
 
 print "\n\t*** Begin quantum chemistry on:   "+sys.argv[1]
 
+
+# read input file
+def read_input(file):
+    global do_ao2mo, do_mp2, do_ccsd, do_eomccsd, do_cis
+
+    inp = {}
+    execfile(file, inp)
+
+    print '\n\tInput file data:'
+    print '\t----------------'
+    try:
+        # task
+        task = inp['task']
+        print '\ttask = ', task
+        if task == 'scf':
+            pass
+        elif task == 'ao2mo':
+            do_ao2mo = True
+        elif task == 'ccsd':
+            do_ao2mo = True
+            do_ccsd = True
+        elif task == 'eomccsd':
+            do_ao2mo = True
+            do_ccsd = True
+            do_eomccsd = True
+        elif task == 'cis':
+            do_ao2mo = True
+            do_cis = True
+        elif task == 'mp2':
+            do_ao2mo = True
+            do_mp2 = True
+        else:
+            raise Exception('wrong task ' + task)
+
+        # geom
+        geom = inp['geom']
+        # bohrs to angstroms
+        for i,a in enumerate(geom):
+            factor = 1.88971616463207
+            geom[i][1] *= factor  # x
+            geom[i][2] *= factor  # y
+            geom[i][3] *= factor  # z
+        print '\tgeom = ', geom
+
+        # basis set
+        basis = inp['basis']
+        print '\t basis = \n'
+        for k,v in basis.items():
+            print 'Element: ', k
+            for fun in v:
+                L, e, c = fun
+                print 'L = ', L
+                for i,ei in enumerate(e):
+                    print '%12.6f%12.6f' % (e[i], c[i])
+            print
+        print '\t----------------\n\n'
+    except KeyError as e:
+        print 'Section not found!'
+        print e
+        raise
+
+    return geom, basis
+
+geom, basis = read_input(sys.argv[1])
+
 # create one and two electron integral arrays, as well as determine
 # number of basis functions (dim) and number of electrons (Nelec)
 
-print "\n\t*** Started creation of one- and two- electron integrals"
+print "\n\t*** Started AO integrals evaluation"
 
+#ints.calculate_ints(geom, basis)
+LOCATION = 'h2o'
 ENUC,Nelec,dim,S,T,V,Hcore,twoe = __init_integrals__(LOCATION)
 
-print "\t*** Finished creation of one- and two- electron integrals\n"
+print "\t*** Finished AO integrals evaluation\n"
 
 # do SCF iteration
 print "\t*** Begin SCF iteration, convergence requested: ",convergence,"a.u."
@@ -77,7 +145,7 @@ if do_mp2 == True:
         mp3_corr = mp2.mp3_energy(dim,Nelec,ints,orbitalE)
         print "Ecorr(MP3)   = ",mp3_corr," a.u."
         print "Total E(MP3) = ",mp2_corr+mp3_corr+EN+ENUC," a.u.\n"
-    
+
 if do_cis == True:
     detci.cis(EN,fs,ints,Nelec,dim)
 if do_dci == True:

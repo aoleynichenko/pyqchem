@@ -1,10 +1,21 @@
 #!/usr/bin/python
 
-####################################
+########################################################################
 #
-# QUANTUM CHEMISTRY ON H2O 
+# PYQCHEM
+# Python experimental quantum chemistry project
 #
-####################################
+# Coupled Clusters Singles & Doubles code
+#
+# Authors:
+# Joshua Goings
+#   http://joshuagoings.com/
+#   https://github.com/jjgoings/pyqchem
+# Alexander Oleynichenko
+#  https://github.com/aoleynichenko/pyqchem
+#  alexvoleynichenko (at) gmail.com
+#
+########################################################################
 
 from __future__ import division
 import sys
@@ -13,11 +24,7 @@ import numpy as np
 
 
 def ccsd(Nelec,dim,fs,ints,convergence,printops):
-    #######################################################
-    #
-    #   CCSD CALCULATION
-    #
-    #######################################################
+
     dim = dim*2
 
     ts = np.zeros((dim,dim))

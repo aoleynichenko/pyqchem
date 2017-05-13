@@ -13,12 +13,18 @@ import time
 
 # Return compund index given four indices
 def eint(a,b,c,d):
-    if a > b: ab = a*(a+1)/2 + b
-    else: ab = b*(b+1)/2 + a
-    if c > d: cd = c*(c+1)/2 + d
-    else: cd = d*(d+1)/2 + c
-    if ab > cd: abcd = ab*(ab+1)/2 + cd
-    else: abcd = cd*(cd+1)/2 + ab
+    if a > b:
+        ab = a*(a+1)/2 + b
+    else:
+        ab = b*(b+1)/2 + a
+    if c > d:
+        cd = c*(c+1)/2 + d
+    else:
+        cd = d*(d+1)/2 + c
+    if ab > cd:
+        abcd = ab*(ab+1)/2 + cd
+    else:
+        abcd = cd*(cd+1)/2 + ab
     return abcd
 
 # Return Value of two electron integral
@@ -33,7 +39,8 @@ def transform_ao2mo(dim,twoe,C,E):
     #   2-E INTEGRAL TRANSFORM TO SPATIAL MO BASIS
     #
     ####################################################
-    print '\tFour-index transformation'
+    print '\t  Four-index transformation'
+    print '\t-----------------------------'
     print '\tdim = %-10d' % (dim)
     t0 = time.time()
 
@@ -98,7 +105,14 @@ def transform_ao2mo(dim,twoe,C,E):
     for i in range(0,dim*2):
 	fs[i] = E[i//2]
 
-    fs = np.diag(fs) 
-    print '\tDone in %.3f sec\n' % (time.time()-t0)
+    fs = np.diag(fs)
+    print '\tdim f = ', fs.shape
+    print '\tdim V = ', ints.shape
+    print '\tN^4 = %d' % (ints.shape[0]**4)
+    print '\t%% of nonzero 2e ints: %.2f' % (100.0 * np.count_nonzero(ints) / ints.shape[0]**4)
+
+    print '\tDone in %.3f sec' % (time.time()-t0)
+    print '\t-----------------------------\n\n'
+
     return ints, fs
 

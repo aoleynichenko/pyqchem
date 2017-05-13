@@ -7,19 +7,28 @@ from numpy import genfromtxt
 from utils import printmat
 #import matplotlib.pyplot as plt
 
+
 # Symmetrize a matrix given a triangular one
 def symmetrize(a):
     return a + a.T - np.diag(a.diagonal())
 
+
 # Return compund index given four indices
 def eint(a,b,c,d):
-    if a > b: ab = a*(a+1)/2 + b
-    else: ab = b*(b+1)/2 + a
-    if c > d: cd = c*(c+1)/2 + d
-    else: cd = d*(d+1)/2 + c
-    if ab > cd: abcd = ab*(ab+1)/2 + cd
-    else: abcd = cd*(cd+1)/2 + ab
+    if a > b:
+        ab = a*(a+1)/2 + b
+    else:
+        ab = b*(b+1)/2 + a
+    if c > d:
+        cd = c*(c+1)/2 + d
+    else:
+        cd = d*(d+1)/2 + c
+    if ab > cd:
+        abcd = ab*(ab+1)/2 + cd
+    else:
+        abcd = cd*(cd+1)/2 + ab
     return abcd
+
 
 # Return Value of two electron integral
 # Example: (12|34) = tei(1,2,3,4)
@@ -27,9 +36,11 @@ def eint(a,b,c,d):
 def tei(a,b,c,d,twoe):
     return twoe.get(eint(a,b,c,d),0.0)
 
+
 # Put Fock matrix in Orthonormal AO basis
 def fprime(X,F):
     return np.dot(np.transpose(X),np.dot(F,X))
+
 
 # Make Density Matrix
 def makedensity(C,P,dim,Nelec):
@@ -45,17 +56,19 @@ def makedensity(C,P,dim,Nelec):
 
 # Make Fock Matrix
 # The most naive implementation, better one provided in minichem project
-def makefock(Hcore,P,dim,twoe):
-    F = np.zeros((dim,dim))
-    for i in range(0,dim):
-        for j in range(0,dim):
-          F[i,j] = Hcore[i,j]
-          for k in range(0,dim):
-              for l in range(0,dim):
-                  F[i,j] = F[i,j] +\
-                           P[k,l]*(tei(i+1,j+1,k+1,l+1,twoe) -\
-                           0.5*tei(i+1,k+1,j+1,l+1,twoe))
+def makefock(Hcore, P, dim, twoe):
+
+    F = np.zeros((dim, dim))
+
+    for i in range(0, dim):
+        for j in range(0, dim):
+          F[i, j] = Hcore[i, j]
+          for k in range(0, dim):
+              for l in range(0, dim):
+                  F[i, j] += P[k,l]*(tei(i+1,j+1,k+1,l+1,twoe) - 0.5*tei(i+1,k+1,j+1,l+1,twoe))
+
     return F 
+
 
 # Calculate change in density matrix
 def deltap(P,OLDP):
@@ -65,6 +78,7 @@ def deltap(P,OLDP):
             DELTA += (P[i,j] - OLDP[i,j])**2
     DELTA = (DELTA/4)**(0.5)
     return DELTA
+
 
 # Calculate change in energy
 def deltae(E,OLDE):
@@ -77,6 +91,7 @@ def currentenergy(P,Hcore,F,dim):
             EN += 0.5*P[mu,nu]*(Hcore[mu,nu] + F[mu,nu])
     return EN
 
+
 def print_mos(E,C,Nelec):
     print '\tRHF final molecular orbitals'
     print '\t----------------------------'
@@ -88,6 +103,7 @@ def print_mos(E,C,Nelec):
             print "%10.4f" % C[j,i],
         print
     print
+
 
 def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
     ######################################
