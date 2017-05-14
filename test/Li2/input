@@ -1,0 +1,12 @@
+# Li2 molecule
+
+geom = [
+[3, 0, 0, 0],
+[3, 0, 0, 2.6730]
+]
+
+basis = 'sto3g'
+
+task = 'ccsd'
+
+

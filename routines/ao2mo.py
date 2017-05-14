@@ -108,7 +108,7 @@ def transform_ao2mo(dim,twoe,C,E):
     fs = np.diag(fs)
 
     # save integrals and orbital energies on disk
-    eps = np.diag(fs)
+    eps = np.diag(fs)[::2]
     np.save('eps.npy', eps)
     np.save('v.npy', ints)
 

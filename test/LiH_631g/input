@@ -1,0 +1,12 @@
+# LiH molecule
+
+geom = [
+  [1, 0, 0, 0],
+  [3, 0, 0, 1.5949]
+]
+
+basis = '631g'
+
+task = 'ccsd'
+
+

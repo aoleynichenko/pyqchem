@@ -1,0 +1,12 @@
+# HF molecule
+
+geom = [
+[1, 0, 0, 0],
+[9, 0, 0, 0.9168]
+]
+
+basis = 'sto3g'
+
+task = 'ccsd'
+
+

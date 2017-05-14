@@ -1,0 +1,12 @@
+# HeH+ molecule
+
+geom = [
+  [1, 0, 0, 0],
+  [2, 0, 0, 0.775]
+]
+
+basis = 'sto3g'
+charge = 1
+task = 'ccsd'
+
+

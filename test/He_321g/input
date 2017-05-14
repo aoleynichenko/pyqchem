@@ -1,0 +1,10 @@
+# He atom
+
+geom = [
+  [2, 0, 0, 0]
+]
+
+basis = '321g'
+task = 'ccsd'
+
+

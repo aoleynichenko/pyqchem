@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ad37852-de46-4e8c-840a-97ea6888cbaa" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/basis_library/ccpvdz" afterPath="$PROJECT_DIR$/basis_library/ccpvdz" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyqchem.py" afterPath="$PROJECT_DIR$/pyqchem.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ccsd.py" afterPath="$PROJECT_DIR$/routines/ccsd.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ints.py" afterPath="$PROJECT_DIR$/routines/ints.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ao2mo.py" afterPath="$PROJECT_DIR$/routines/ao2mo.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -45,10 +43,22 @@
       <file leaf-file-name="ccsd.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routines/ccsd.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-792">
-              <caret line="54" column="43" lean-forward="true" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+            <state relative-caret-position="374">
+              <caret line="47" column="2" lean-forward="true" selection-start-line="47" selection-start-column="2" selection-end-line="47" selection-end-column="2" />
               <folding>
                 <element signature="e#475#506#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="eomccsd.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routines/eomccsd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4841">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#1#32#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -69,8 +79,8 @@
       <file leaf-file-name="ao2mo.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routines/ao2mo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="891">
-              <caret line="112" column="26" lean-forward="false" selection-start-line="112" selection-start-column="26" selection-end-line="112" selection-end-column="26" />
+            <state relative-caret-position="1859">
+              <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -122,11 +132,11 @@
         <option value="$PROJECT_DIR$/routines/scf.py" />
         <option value="$PROJECT_DIR$/routines/integral_input.py" />
         <option value="$PROJECT_DIR$/routines/detci/detci.py" />
-        <option value="$PROJECT_DIR$/routines/ao2mo.py" />
         <option value="$PROJECT_DIR$/routines/ints.py" />
         <option value="$PROJECT_DIR$/basis_library/ccpvdz" />
         <option value="$PROJECT_DIR$/pyqchem.py" />
         <option value="$PROJECT_DIR$/routines/ccsd.py" />
+        <option value="$PROJECT_DIR$/routines/ao2mo.py" />
       </list>
     </option>
   </component>
@@ -515,14 +525,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routines/ao2mo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="891">
-          <caret line="112" column="26" lean-forward="false" selection-start-line="112" selection-start-column="26" selection-end-line="112" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routines/ints.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="539">
@@ -561,10 +563,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routines/ao2mo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1859">
+          <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routines/eomccsd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4841">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#1#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/routines/ccsd.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-792">
-          <caret line="54" column="43" lean-forward="true" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+        <state relative-caret-position="374">
+          <caret line="47" column="2" lean-forward="true" selection-start-line="47" selection-start-column="2" selection-end-line="47" selection-end-column="2" />
           <folding>
             <element signature="e#475#506#0" expanded="true" />
           </folding>
