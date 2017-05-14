@@ -106,6 +106,12 @@ def transform_ao2mo(dim,twoe,C,E):
 	fs[i] = E[i//2]
 
     fs = np.diag(fs)
+
+    # save integrals and orbital energies on disk
+    eps = np.diag(fs)
+    np.save('eps.npy', eps)
+    np.save('v.npy', ints)
+
     print '\tdim f = ', fs.shape
     print '\tdim V = ', ints.shape
     print '\tN^4 = %d' % (ints.shape[0]**4)

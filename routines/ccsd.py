@@ -23,20 +23,26 @@ import math
 import numpy as np
 
 
-def ccsd(Nelec,dim,fs,ints,convergence,printops):
+def ccsd(Nelec,dim,fs,ints,convergence,printops,reuse_t1t2):
 
     dim = dim*2
 
     ts = np.zeros((dim,dim))
     td = np.zeros((dim,dim,dim,dim))
 
-    # Initial guess T2
-
-    for a in range(Nelec,dim):
-      for b in range(Nelec,dim):
-	for i in range(0,Nelec):
-	  for j in range(0,Nelec):
-	    td[a,b,i,j] += ints[i,j,a,b]/(fs[i,i] + fs[j,j] - fs[a,a] - fs[b,b])
+    if not reuse_t1t2:
+        # MP2 initial guess T2
+        print 'MP2 initial guess'
+        for a in range(Nelec,dim):
+            for b in range(Nelec,dim):
+                for i in range(0,Nelec):
+                    for j in range(0,Nelec):
+                        td[a,b,i,j] += ints[i,j,a,b]/(fs[i,i] + fs[j,j] - fs[a,a] - fs[b,b])
+    else:
+        # read initial T1 and T2 from files
+        print 'Reuse T1 and T2 amplitudes'
+        ts = np.load('t1.npy')
+        td = np.load('t2.npy')
 
     # Make denominator arrays
     Dai = np.zeros((dim,dim))
@@ -188,14 +194,14 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops):
 	return tdnew
 
     def ccsdenergy():
-      ECCSD = 0.0
-      for i in range(0,Nelec):
-	for a in range(Nelec,dim):
-	  ECCSD += fs[i,a]*ts[a,i]
-	  for j in range(0,Nelec):
-	    for b in range(Nelec,dim):
-	      ECCSD += 0.25*ints[i,j,a,b]*td[a,b,i,j] + 0.5*ints[i,j,a,b]*(ts[a,i])*(ts[b,j]) 
-      return ECCSD
+        ECCSD = 0.0
+        for i in range(0,Nelec):
+            for a in range(Nelec,dim):
+                ECCSD += fs[i,a]*ts[a,i]
+                for j in range(0,Nelec):
+                    for b in range(Nelec,dim):
+                        ECCSD += 0.25*ints[i,j,a,b]*td[a,b,i,j] + 0.5*ints[i,j,a,b]*(ts[a,i])*(ts[b,j])
+        return ECCSD
 
     # CCSD iteration
     do_DIIS = True 
@@ -264,6 +270,11 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops):
             print "TOTAL ITERATIONS: ",j
             break
         if printops == True:
-            print "E corr: {0:.12f}".format(ECCSD),"a.u.",'\t',"DeltaE: {0:.12f}".format(DECC)
+            print "%3d  " % (j), "E corr: {0:.12f}".format(ECCSD),"a.u.",'\t',"DeltaE: {0:.12f}".format(DECC)
+
+		# save T1 and T2 amplitudes to files
+        np.save('t1.npy', ts)
+        np.save('t2.npy', td)
+
     return ECCSD,ts,td 
         

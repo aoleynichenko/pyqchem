@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+#  cc-pVDZ  EMSL  Basis Set Exchange Library   5/14/17 5:34 AM
+# Elements                             References
+# --------                             ----------
+# H     : T.H. Dunning, Jr. J. Chem. Phys. 90, 1007 (1989).
+# He    : D.E. Woon and T.H. Dunning, Jr. J. Chem. Phys. 100, 2975 (1994).
+# Li - Ne: T.H. Dunning, Jr. J. Chem. Phys. 90, 1007 (1989).
+# Na - Mg: D.E. Woon and T.H. Dunning, Jr.  (to be published)
+# Al - Ar: D.E. Woon and T.H. Dunning, Jr.  J. Chem. Phys. 98, 1358 (1993).
+# Sc - Zn: N.B. Balabanov and K.A. Peterson, J. Chem. Phys. 123, 064107 (2005),
+# N.B. Balabanov and K.A. Peterson, J. Chem. Phys. 125, 074110 (2006)
+# Ca     : J. Koput and K.A. Peterson, J. Phys. Chem. A, 106, 9595 (2002).
+# 
+
+basis={
+
+# H
+1: [
+  (0, (13.0100000, 1.9620000, 0.4446000), (0.0196850, 0.1379770, 0.4781480)),
+  (0, (0.1220000,), (1.0,)),
+  (1, (0.7270000,), (1.0))
+],
+
+# He
+2: [
+  (0, (38.3600000, 5.7700000, 1.2400000), (0.0238090, 0.1548910, 0.4699870)),
+  (0, (0.2976000,), (1.0,)),
+  (1, (1.2750000,), (1.0,))
+]
+
+}

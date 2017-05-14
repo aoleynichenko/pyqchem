@@ -1,0 +1,12 @@
+# Be atom
+
+geom = [
+  [4, 0, 0, 0]
+]
+
+# STO-3G
+basis = 'sto3g'
+
+task = 'ccsd'
+
+

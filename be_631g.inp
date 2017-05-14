@@ -1,0 +1,12 @@
+# Be atom
+
+geom = [
+  [4, 0, 0, 0]
+]
+
+# 6-31G
+basis = '631g'
+
+task = 'ccsd'
+
+

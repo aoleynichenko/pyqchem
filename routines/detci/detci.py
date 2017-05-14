@@ -63,17 +63,17 @@ def cis(E0,f,ints,Nelec,dim):
         print '  N\tdE\t\tCoefficients'
         
         
-        for i in range (0,size):
+        for i in range(0, size):
             print "%3d%10.4f" % (i+1, dE[i]),
             for j in range (0,size):
                 print "%10.4f" % civecs[j,i],
             print
         print
     else:
-        print 'Roots (in a.u.):'
-        print '----------------'
-        for i in range (0,size):
-            print "%3d%10.4f" % (i+1, dE[i])
+        print 'Roots    a.u.        cm^-1:'
+        print '---------------------------'
+        for i in range(0, size):
+            print "%3d%10.4f%14.2f" % (i+1, dE[i], dE[i]*219474.63)
     del HSS
 
 ########################################################################

@@ -1,6 +1,6 @@
 # AO integrals evaluation module
 #
-# Based on an excellent code of Joshua Goings: http://joshuagoings.com/
+# Based on the excellent code of Joshua Goings: http://joshuagoings.com/
 # Alexander Oleynichenko, 2017
 
 import math
@@ -307,7 +307,7 @@ def gen_angmom_list(L):
     return shells
 
 
-def calculate_ints(geom, basis):
+def calculate_ints(geom, basis, charge):
     print 'integral evaluation...'
 
     # atom-centered basis set
@@ -315,7 +315,7 @@ def calculate_ints(geom, basis):
     for atom in geom:
         Z = atom[0]
         x, y, z = [float(coord) for coord in atom[1:]]
-        print Z, x, y, z
+        # print Z, x, y, z
 
         for b in basis[Z]:
             # gen shells
@@ -341,22 +341,28 @@ def calculate_ints(geom, basis):
                 enuc += a[0]*b[0] / d
     enuc /= 2
 
-    nelec = 0
+    nelec = charge
     for a in geom:
         nelec += a[0]
 
+    print 'nelec = ', nelec
     print 'enuc = ', enuc
+
+    # only unique integrals will be evaluated
     print 'N(unique ERIs) = ',  (M**4+2*M**3+3*M**2+2*M)/8
+    n_nonzero = 0
+    with open("eri.dat", "w") as f:
+        for m in xrange(0, M):
+            for n in xrange(m, M):
+                for p in xrange(m, M):
+                    q0 = n if p == m else p
+                    for q in xrange(q0,M):
+                        eri_mnpq = ERI(bfns[m], bfns[n], bfns[p], bfns[q])
+                        if abs(eri_mnpq) > 1e-12:
+                            n_nonzero += 1
+                            f.write("%3d%3d%3d%3d%15.8f\n" % (m+1, n+1, p+1, q+1, eri_mnpq))
 
-    ERIS = np.zeros((M,M,M,M))
-    for i in xrange(0,M):
-        print '< %d . | . . >' % (i)
-        for j in xrange(0, M):
-            for k in xrange(0, M):
-                for l in xrange(0, M):
-                    ERIS[i,j,k,l] = ERI(bfns[i], bfns[j], bfns[k], bfns[l])
-
-    print '# nonzero ERIS = ', np.count_nonzero(ERIS)
+    print '# nonzero ERIS = ', n_nonzero
 
     # print evaluated integrals to files
     np.savetxt('s.dat', S)
@@ -368,10 +374,4 @@ def calculate_ints(geom, basis):
         f.write("%d\n" % (M))
     with open("nelec.dat", "w") as f:
         f.write("%d\n" % (nelec))
-    with open("eri.dat", "w") as f:
-        for i in xrange(0, M):
-            for j in xrange(0, M):
-                for k in xrange(0, M):
-                    for l in xrange(0, M):
-                        if abs(ERIS[i,j,k,l]) > 1e-12:
-                            f.write("%3d%3d%3d%3d%15.8f\n" % (i+1, j+1, k+1, l+1, ERIS[i,j,k,l]))
+
