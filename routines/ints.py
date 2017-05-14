@@ -341,7 +341,7 @@ def calculate_ints(geom, basis, charge):
                 enuc += a[0]*b[0] / d
     enuc /= 2
 
-    nelec = charge
+    nelec = -charge
     for a in geom:
         nelec += a[0]
 

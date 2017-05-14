@@ -44,10 +44,12 @@ printnum     = 6			# number eigenvalues to print for TDHF/CIS
 # ask for location of integral/input files
 
 if len(sys.argv)==1:
-    print "Enter folder containing input .dat files"
-    sys.exit(1)
+    inp_name = 'input'
+else:
+    inp_name = sys.argv[1]
 
-LOCATION = sys.argv[1]
+
+#LOCATION = sys.argv[1]
 PYQCHEM_HOME = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 print
@@ -69,7 +71,7 @@ print "\t\t* alexvoleynichenko@gmail.com            *"
 print "\t\t******************************************"
 print
 
-print "\n\t*** Begin quantum chemistry on:   "+sys.argv[1]
+print "\n\t*** Begin quantum chemistry on:   " + inp_name
 
 
 # read input file
@@ -157,7 +159,7 @@ def read_input(file):
 
     return geom, basis, charge
 
-geom, basis, charge = read_input(sys.argv[1])
+geom, basis, charge = read_input(inp_name)
 
 # create one and two electron integral arrays, as well as determine
 # number of basis functions (dim) and number of electrons (Nelec)

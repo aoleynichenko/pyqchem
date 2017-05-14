@@ -27,8 +27,16 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops,reuse_t1t2):
 
     dim = dim*2
 
-    ts = np.zeros((dim,dim))
-    td = np.zeros((dim,dim,dim,dim))
+    N = dim
+    Nelec = int(np.genfromtxt('nelec.dat', dtype=int))
+    Nocc = Nelec
+    Nvirt = N - Nocc
+
+    print 'nocc', Nocc
+    print 'nvirt', Nvirt
+
+    ts = np.zeros((N,N))
+    td = np.zeros((N,N,N,N))
 
     if not reuse_t1t2:
         # MP2 initial guess T2
@@ -41,8 +49,10 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops,reuse_t1t2):
     else:
         # read initial T1 and T2 from files
         print 'Reuse T1 and T2 amplitudes'
-        ts = np.load('t1.npy')
-        td = np.load('t2.npy')
+        t1 = np.load('t1.npy')
+        t2 = np.load('t2.npy')
+        ts[Nocc:, :Nocc] = t1
+        td[Nocc:, Nocc:, :Nocc, :Nocc] = t2
 
     # Make denominator arrays
     Dai = np.zeros((dim,dim))
@@ -272,9 +282,15 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops,reuse_t1t2):
         if printops == True:
             print "%3d  " % (j), "E corr: {0:.12f}".format(ECCSD),"a.u.",'\t',"DeltaE: {0:.12f}".format(DECC)
 
-		# save T1 and T2 amplitudes to files
-        np.save('t1.npy', ts)
-        np.save('t2.npy', td)
+	# save T1 and T2 amplitudes to files
+    # we save only nonzero blocks
+    #         a       i
+    ts = ts[Nocc:, :Nocc]
+    #         a      b       i       j
+    td = td[Nocc:, Nocc:, :Nocc, :Nocc]
+
+    np.save('t1.npy', ts)
+    np.save('t2.npy', td)
 
     return ECCSD,ts,td 
         

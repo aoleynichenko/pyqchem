@@ -2,24 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ad37852-de46-4e8c-840a-97ea6888cbaa" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/321g" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/631g" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/ccpvdz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/sto3g" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_321g.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_321g.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_631g.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_sto3g.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_sto3g.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/h2o_321g.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/h2o_sto3g.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/he_ccpvdz.inp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/li_sto3g.inp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/basis_library/ccpvdz" afterPath="$PROJECT_DIR$/basis_library/ccpvdz" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyqchem.py" afterPath="$PROJECT_DIR$/pyqchem.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ao2mo.py" afterPath="$PROJECT_DIR$/routines/ao2mo.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ccsd.py" afterPath="$PROJECT_DIR$/routines/ccsd.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/detci/detci.py" afterPath="$PROJECT_DIR$/routines/detci/detci.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ints.py" afterPath="$PROJECT_DIR$/routines/ints.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,8 +23,8 @@
       <file leaf-file-name="pyqchem.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyqchem.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="166" column="40" lean-forward="false" selection-start-line="166" selection-start-column="40" selection-end-line="166" selection-end-column="40" />
+            <state relative-caret-position="429">
+              <caret line="73" column="57" lean-forward="false" selection-start-line="73" selection-start-column="57" selection-end-line="73" selection-end-column="57" />
               <folding>
                 <element signature="e#18#49#0" expanded="true" />
               </folding>
@@ -57,13 +42,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ccsd.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ccsd.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routines/ccsd.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="205" column="17" lean-forward="false" selection-start-line="205" selection-start-column="17" selection-end-line="205" selection-end-column="17" />
+            <state relative-caret-position="-792">
+              <caret line="54" column="43" lean-forward="true" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
               <folding>
                 <element signature="e#475#506#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="integral_input.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routines/integral_input.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="506">
+              <caret line="50" column="73" lean-forward="true" selection-start-line="50" selection-start-column="73" selection-end-line="50" selection-end-column="73" />
+              <folding>
+                <element signature="e#19#50#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -79,14 +76,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ints.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ints.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routines/ints.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="649">
-              <caret line="347" column="27" lean-forward="false" selection-start-line="347" selection-start-column="27" selection-end-line="347" selection-end-column="27" />
+            <state relative-caret-position="539">
+              <caret line="342" column="0" lean-forward="true" selection-start-line="342" selection-start-column="0" selection-end-line="342" selection-end-column="0" />
               <folding>
                 <element signature="e#140#151#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ccpvdz" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/basis_library/ccpvdz">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="352">
+              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -116,9 +123,10 @@
         <option value="$PROJECT_DIR$/routines/integral_input.py" />
         <option value="$PROJECT_DIR$/routines/detci/detci.py" />
         <option value="$PROJECT_DIR$/routines/ao2mo.py" />
-        <option value="$PROJECT_DIR$/routines/ccsd.py" />
-        <option value="$PROJECT_DIR$/pyqchem.py" />
         <option value="$PROJECT_DIR$/routines/ints.py" />
+        <option value="$PROJECT_DIR$/basis_library/ccpvdz" />
+        <option value="$PROJECT_DIR$/pyqchem.py" />
+        <option value="$PROJECT_DIR$/routines/ccsd.py" />
       </list>
     </option>
   </component>
@@ -406,13 +414,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routines/integral_input.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="671">
-          <caret line="69" column="73" lean-forward="true" selection-start-line="69" selection-start-column="73" selection-end-line="69" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routines/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -522,32 +523,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routines/ccsd.py">
+    <entry file="file://$PROJECT_DIR$/routines/ints.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="205" column="17" lean-forward="false" selection-start-line="205" selection-start-column="17" selection-end-line="205" selection-end-column="17" />
+        <state relative-caret-position="539">
+          <caret line="342" column="0" lean-forward="true" selection-start-line="342" selection-start-column="0" selection-end-line="342" selection-end-column="0" />
           <folding>
-            <element signature="e#475#506#0" expanded="true" />
+            <element signature="e#140#151#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/basis_library/ccpvdz">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pyqchem.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="166" column="40" lean-forward="false" selection-start-line="166" selection-start-column="40" selection-end-line="166" selection-end-column="40" />
+        <state relative-caret-position="429">
+          <caret line="73" column="57" lean-forward="false" selection-start-line="73" selection-start-column="57" selection-end-line="73" selection-end-column="57" />
           <folding>
             <element signature="e#18#49#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routines/ints.py">
+    <entry file="file://$PROJECT_DIR$/routines/integral_input.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="649">
-          <caret line="347" column="27" lean-forward="false" selection-start-line="347" selection-start-column="27" selection-end-line="347" selection-end-column="27" />
+        <state relative-caret-position="506">
+          <caret line="50" column="73" lean-forward="true" selection-start-line="50" selection-start-column="73" selection-end-line="50" selection-end-column="73" />
           <folding>
-            <element signature="e#140#151#0" expanded="true" />
+            <element signature="e#19#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routines/ccsd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-792">
+          <caret line="54" column="43" lean-forward="true" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+          <folding>
+            <element signature="e#475#506#0" expanded="true" />
           </folding>
         </state>
       </provider>
