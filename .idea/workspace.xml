@@ -2,6 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ad37852-de46-4e8c-840a-97ea6888cbaa" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/321g" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/631g" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/ccpvdz" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/basis_library/sto3g" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_321g.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_321g.out" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_631g.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_sto3g.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/be_sto3g.out" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/h2o_321g.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/h2o_sto3g.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/he_ccpvdz.inp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/li_sto3g.inp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pyqchem.py" afterPath="$PROJECT_DIR$/pyqchem.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routines/ao2mo.py" afterPath="$PROJECT_DIR$/routines/ao2mo.py" />
