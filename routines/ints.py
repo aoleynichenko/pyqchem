@@ -1,6 +1,7 @@
 # AO integrals evaluation module
 #
 # Based on the excellent code of Joshua Goings: http://joshuagoings.com/
+# McMurchie-Davidson algorithm is implemented.
 # Alexander Oleynichenko, 2017
 
 import math
@@ -280,8 +281,8 @@ def ERI(a,b,c,d):
         Arguments:
         a: contracted Gaussian 'a', BasisFunction object
         b: contracted Gaussian 'b', BasisFunction object
-        c: contracted Gaussian 'b', BasisFunction object
-        d: contracted Gaussian 'b', BasisFunction object
+        c: contracted Gaussian 'c', BasisFunction object
+        d: contracted Gaussian 'd', BasisFunction object
      '''
      eri = 0.0
      for ja, ca in enumerate(a.coefs):
@@ -351,6 +352,7 @@ def calculate_ints(geom, basis, charge):
     # only unique integrals will be evaluated
     print 'N(unique ERIs) = ',  (M**4+2*M**3+3*M**2+2*M)/8
     n_nonzero = 0
+    count = 0
     with open("eri.dat", "w") as f:
         for m in xrange(0, M):
             for n in xrange(m, M):
@@ -358,6 +360,9 @@ def calculate_ints(geom, basis, charge):
                     q0 = n if p == m else p
                     for q in xrange(q0,M):
                         eri_mnpq = ERI(bfns[m], bfns[n], bfns[p], bfns[q])
+                        count += 1
+                        if count % 5000 == 0:
+                            print 'done: ', count
                         if abs(eri_mnpq) > 1e-12:
                             n_nonzero += 1
                             f.write("%3d%3d%3d%3d%15.8f\n" % (m+1, n+1, p+1, q+1, eri_mnpq))
