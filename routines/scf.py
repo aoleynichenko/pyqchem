@@ -3,6 +3,7 @@
 from __future__ import division
 import math
 import numpy as np
+import routines.ints as ints
 from numpy import genfromtxt
 from utils import printmat
 #import matplotlib.pyplot as plt
@@ -93,19 +94,42 @@ def currentenergy(P,Hcore,F,dim):
 
 
 def print_mos(E,C,Nelec):
-    print '\tRHF final molecular orbitals'
+    print '\n\tRHF final molecular orbitals'
     print '\t----------------------------'
     print '  N      E\tOcc\tCoefficients'
     dim = len(C)
-    for i in range (0,dim):
-        print "%3d%10.4f%5d" % (i+1, E[i], (2 if (i<Nelec/2) else 0)),
-        for j in range (0,dim):
+    for i in xrange(0,dim):
+        print "%3d%10.4f%5d" % (i+1, E[i], (2 if (i < Nelec/2) else 0)),
+        for j in xrange(0,dim):
             print "%10.4f" % C[j,i],
         print
     print
 
 
-def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
+def mulliken(PS,geom,bfns):
+    def double_vec_eq(a, b):
+        for i in xrange(0,len(a)):
+            if abs(a[i]-b[i]) >= 1e-14:
+                return False
+        return True
+
+    print '\n\tMulliken Population Analysis'
+    print '\t----------------------------\n'
+    print '   Z      x        y        z       N(elec)   Charge'
+    print '-------------------------------------------------------'
+    for i,at in enumerate(geom):
+        Z, x, y, z = at
+        pop = 0.0
+        for j, b in enumerate(bfns):
+            if double_vec_eq([x,y,z],b.origin):
+                pop += PS[j,j]
+        qA = Z - pop
+        print '%4d%9.4f%9.4f%9.4f | %9.4f%9.4f' % (Z, x, y, z, pop, qA)
+    print '-------------------------------------------------------'
+    print
+
+
+def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS,geom,bfns):
     ######################################
     #
     #   SCF PROCEDURE
@@ -115,8 +139,10 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
     # Step 1: orthogonalize the basis (I used symmetric orthogonalization,
     # which uses the S^(-1/2) as the transformation matrix. See Szabo and Ostlund
     # p 143 for more details.
-     
+
+    print 'Basis set orthogonalization'
     SVAL, SVEC = np.linalg.eigh(S)
+    print 'min S eigenvalue = ', np.min(SVAL)
     SVAL_minhalf = (np.diag(SVAL**(-0.5)))
     X = S_minhalf = np.dot(SVEC,np.dot(SVAL_minhalf,np.transpose(SVEC)))
 
@@ -180,13 +206,14 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
         OLDE = currentenergy(P,Hcore,F,dim)
         if DELTA < convergence:
             print "NUMBER ITERATIONS: ",j
-            printmat("Final Fock matrix in AO basis", F)
+            #printmat("Final Fock matrix in AO basis", F)
             FMO = np.dot(np.transpose(C), np.dot(F, C))
-            printmat("Final Fock matrix in MO basis", FMO)
+            #printmat("Final Fock matrix in MO basis", FMO)
             print_mos(E,C,Nelec)
             # mulliken
             PS = np.dot(P,S)
-            printmat("Mulliken analysis matrix PS", PS)
+            mulliken(PS,geom,bfns)
+            #printmat("Mulliken analysis matrix PS", PS)
             print 'Nelec = ', np.trace(PS)
             break
         if j == 119:

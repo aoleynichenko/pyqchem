@@ -18,6 +18,7 @@ import routines.eomccsd as eomccsd
 import routines.eommbpt2 as eommbpt2
 import routines.eommbptp2 as eommbptp2
 import routines.eommbptd as eommbptd
+import time
 
 """ Edit below to perform the calculation desired
 """
@@ -74,6 +75,7 @@ print
 
 print "\n\t*** Begin quantum chemistry on:   " + inp_name
 
+t1 = time.time()
 
 # read input file
 def read_input(file):
@@ -171,7 +173,7 @@ geom, basis, charge = read_input(inp_name)
 
 print "\n\t*** Started AO integrals evaluation"
 
-ints.calculate_ints(geom, basis, charge)
+bfns = ints.calculate_ints(geom, basis, charge)  # returns atom-centered basis set
 LOCATION = '.'
 ENUC,Nelec,dim,S,T,V,Hcore,twoe = __init_integrals__(LOCATION)
 
@@ -179,7 +181,7 @@ print "\t*** Finished AO integrals evaluation\n"
 
 # do SCF iteration
 print "\t*** Begin SCF, convergence requested: ",convergence,"a.u."
-EN,orbitalE,C,P,F = scf.scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS)
+EN,orbitalE,C,P,F = scf.scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS,geom,bfns)
 
 print "Total E(RHF): ", EN+ENUC," a.u."
 print "\t*** End of SCF\n"
@@ -244,5 +246,7 @@ if do_eommbptp2 == True:
     eommbptp2.eommbptp2(Nelec,dim,fs,ints,T1,T2)
     print "\t*** End EOM-MBPT(2) calculation"
 
-
+# end of pyqchem
+t2 = time.time()
+print "*** Total time (sec): %.2f" % (t2-t1)
 

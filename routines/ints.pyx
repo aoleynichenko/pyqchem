@@ -341,6 +341,7 @@ def gen_angmom_list(L):
     return shells
 
 
+# returns atom-centered basis set
 def calculate_ints(geom, basis, charge):
 
     # atom-centered basis set
@@ -402,6 +403,7 @@ def calculate_ints(geom, basis, charge):
     t2 = time.time()
 
     print '# nonzero ERIs = ', n_nonzero
+    print '%% nonzero ERIs = %.1f' % (100.0*n_nonzero/count)
     print 'Time for 2-el integrals = ', (t2-t1), ' sec'
     print 'Time per ERI = ', (t2-t1)/count, ' sec'
 
@@ -416,3 +418,4 @@ def calculate_ints(geom, basis, charge):
     with open("nelec.dat", "w") as f:
         f.write("%d\n" % (nelec))
 
+    return bfns
