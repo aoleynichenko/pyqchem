@@ -5,8 +5,8 @@ geom = [
 [9, 0, 0, 1.4119]
 ]
 
-basis = 'sto3g'
+basis = '631g'
 
-task = 'ccsd'
+task = 'scf'
 
 

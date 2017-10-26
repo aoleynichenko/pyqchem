@@ -13,11 +13,14 @@ import time
 from scipy.special import hyp1f1
 
 
-def fact2(n):
+cdef double PI = 3.1415926535897932384626433832795
+
+
+cdef int fact2(int n):
     return reduce(int.__mul__, range(n, 0, -2), 1)
 
 
-def boys(n,T):
+cdef double boys(int n, double T):
     return hyp1f1(n+0.5,n+1.5,-T)/(2.0*n+1.0)
 
 
@@ -47,7 +50,7 @@ class BasisFunction(object):
         self.norm = np.sqrt(np.power(2,2*(l+m+n)+1.5)*
                         np.power(self.exps,l+m+n+1.5)/
                         fact2(2*l-1)/fact2(2*m-1)/
-                        fact2(2*n-1)/np.power(np.pi,1.5))
+                        fact2(2*n-1)/np.power(PI,1.5))
 
 
 cdef double E(int i, int j, int t, double Qx, double a, double b):
@@ -94,12 +97,15 @@ def overlap(a,lmn1,A,b,lmn2,B):
         A:    list containing origin of Gaussian 'a', e.g. [1.0, 2.0, 0.0]
         B:    list containing origin of Gaussian 'b'
     '''
+    cdef int l1, m1, n1, l2, m2, n2
+    cdef double S1, S2, S3
+
     l1,m1,n1 = lmn1 # shell angular momentum on Gaussian 'a'
     l2,m2,n2 = lmn2 # shell angular momentum on Gaussian 'b'
     S1 = E(l1,l2,0,A[0]-B[0],a,b)#,n[0],A[0]) # X
     S2 = E(m1,m2,0,A[1]-B[1],a,b)#,n[1],A[1]) # Y
     S3 = E(n1,n2,0,A[2]-B[2],a,b)#,n[2],A[2]) # Z
-    return S1*S2*S3*np.power(np.pi/(a+b),1.5)
+    return S1*S2*S3*np.power(PI/(a+b),1.5)
 
 
 def int_S(a,b):
@@ -129,6 +135,9 @@ def kinetic(a,lmn1,A,b,lmn2,B):
         A:    list containing origin of Gaussian 'a', e.g. [1.0, 2.0, 0.0]
         B:    list containing origin of Gaussian 'b'
     '''
+    cdef int l1, m1, n1, l2, m2, n2
+    cdef double term0, term1, term2
+
     l1,m1,n1 = lmn1
     l2,m2,n2 = lmn2
     term0 = b*(2*(l2+m2+n2)+3)*\
@@ -159,7 +168,7 @@ def int_T(a,b):
     return t
 
 
-def R(t,u,v,n,p,PCx,PCy,PCz,RPC):
+cdef double R(int t, int u, int v, int n, double p, double PCx, double PCy, double PCz, double RPC):
     ''' Returns the Coulomb auxiliary Hermite integrals
         Returns a float.
         Arguments:
@@ -170,6 +179,8 @@ def R(t,u,v,n,p,PCx,PCy,PCz,RPC):
                  composite center P and nuclear center C
         RPC:     Distance between P and C
     '''
+    cdef double T, val
+
     T = p*RPC*RPC
     val = 0.0
     if t == u == v == 0:
@@ -189,7 +200,7 @@ def R(t,u,v,n,p,PCx,PCy,PCz,RPC):
     return val
 
 
-def gaussian_product_center(a,A,b,B):
+def gaussian_product_center(a, A, b, B):
     return (a*A+b*B)/(a+b)
 
 
@@ -219,7 +230,7 @@ def nuclear_attraction(a, lmn1, A, b, lmn2, B, C):
                        E(m1, m2, u, A[1] - B[1], a, b) * \
                        E(n1, n2, v, A[2] - B[2], a, b) * \
                        R(t, u, v, 0, p, P[0] - C[0], P[1] - C[1], P[2] - C[2], RPC)
-    val *= 2 * np.pi / p
+    val *= 2 * PI / p
     return val
 
 
@@ -241,7 +252,7 @@ def int_V(a,b,C):
 
 
 def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
-    ''' Evaluates kinetic energy integral between two Gaussians
+    ''' Evaluates electron repulsion integral between four primitive Gaussians
          Returns a float.
          a,b,c,d:   orbital exponent on Gaussian 'a','b','c','d'
          lmn1,lmn2
@@ -249,29 +260,31 @@ def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
                     for Gaussian 'a','b','c','d', respectively
          A,B,C,D:   list containing origin of Gaussian 'a','b','c','d'
      '''
+    cdef int l1, m1, n1, l2, m2, n2, l3, m3, n3, l4, m4, n4
     l1, m1, n1 = lmn1
     l2, m2, n2 = lmn2
     l3, m3, n3 = lmn3
     l4, m4, n4 = lmn4
-    p = a + b  # composite exponent for P (from Gaussians 'a' and 'b')
-    q = c + d  # composite exponent for Q (from Gaussians 'c' and 'd')
-    alpha = p * q / (p + q)
+    cdef double p = a + b  # composite exponent for P (from Gaussians 'a' and 'b')
+    cdef double q = c + d  # composite exponent for Q (from Gaussians 'c' and 'd')
+    cdef double alpha = p * q / (p + q)
     P = gaussian_product_center(a, A, b, B)  # A and B composite center
     Q = gaussian_product_center(c, C, d, D)  # C and D composite center
-    RPQ = np.linalg.norm(P - Q)
+    cdef double RPQ = np.linalg.norm(P - Q)
 
     # distances
-    A0B0 = A[0] - B[0]
-    A1B1 = A[1] - B[1]
-    A2B2 = A[2] - B[2]
-    C0D0 = C[0] - D[0]
-    C1D1 = C[1] - D[1]
-    C2D2 = C[2] - D[2]
-    P0Q0 = P[0] - Q[0]
-    P1Q1 = P[1] - Q[1]
-    P2Q2 = P[2] - Q[2]
+    cdef double A0B0 = A[0] - B[0]
+    cdef double A1B1 = A[1] - B[1]
+    cdef double A2B2 = A[2] - B[2]
+    cdef double C0D0 = C[0] - D[0]
+    cdef double C1D1 = C[1] - D[1]
+    cdef double C2D2 = C[2] - D[2]
+    cdef double P0Q0 = P[0] - Q[0]
+    cdef double P1Q1 = P[1] - Q[1]
+    cdef double P2Q2 = P[2] - Q[2]
+    cdef int t, u, v, tau, nu, phi
 
-    val = 0.0
+    cdef double val = 0.0
     for t in xrange(l1 + l2 + 1):
         for u in xrange(m1 + m2 + 1):
             for v in xrange(n1 + n2 + 1):
@@ -288,7 +301,7 @@ def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
                                    R(t + tau, u + nu, v + phi, 0, \
                                      alpha, P0Q0, P1Q1, P2Q2, RPQ)
 
-    val *= 2 * np.power(np.pi, 2.5) / (p * q * np.sqrt(p + q))
+    val *= 2 * np.power(PI, 2.5) / (p * q * np.sqrt(p + q))
     return val
 
 
@@ -301,7 +314,10 @@ def ERI(a,b,c,d):
         c: contracted Gaussian 'c', BasisFunction object
         d: contracted Gaussian 'd', BasisFunction object
      '''
-     eri = 0.0
+     cdef double eri = 0.0
+     cdef int ja, jb, jc, jd
+     cdef double ca, cb, cc, cd
+
      for ja, ca in enumerate(a.coefs):
          for jb, cb in enumerate(b.coefs):
              for jc, cc in enumerate(c.coefs):
@@ -363,10 +379,10 @@ def calculate_ints(geom, basis, charge):
         nelec += a[0]
 
     print 'nelec = ', nelec
-    print 'enuc = ', enuc
+    print 'enuc  = ', enuc
 
     # only unique integrals will be evaluated
-    print 'N(unique ERIs) = ',  (M**4+2*M**3+3*M**2+2*M)/8
+    print '# unique ERIs  = ',  (M**4+2*M**3+3*M**2+2*M)/8
     n_nonzero = 0
     count = 0
     t1 = time.time()
@@ -385,7 +401,8 @@ def calculate_ints(geom, basis, charge):
                             f.write("%3d%3d%3d%3d%15.8f\n" % (m+1, n+1, p+1, q+1, eri_mnpq))
     t2 = time.time()
 
-    print '# nonzero ERIS = ', n_nonzero
+    print '# nonzero ERIs = ', n_nonzero
+    print 'Time for 2-el integrals = ', (t2-t1), ' sec'
     print 'Time per ERI = ', (t2-t1)/count, ' sec'
 
     # print evaluated integrals to files
