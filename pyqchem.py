@@ -5,6 +5,7 @@ import os
 import numpy as np
 #import matplotlib.pyplot as plt
 import math
+import pyximport; pyximport.install()
 from routines.integral_input import __init_integrals__
 import routines.scf as scf
 import routines.ints as ints
@@ -22,7 +23,7 @@ import routines.eommbptd as eommbptd
 """
 
 do_DIIS      = True
-do_ao2mo     = True
+do_ao2mo     = False
 do_mp2       = False
 do_mp3       = False
 do_cis       = False
@@ -53,22 +54,22 @@ else:
 PYQCHEM_HOME = os.path.abspath(os.path.dirname(sys.argv[0]))
 
 print
-print "\t\t******************************************"
-print "\t\t*              P Y Q C H E M             *"
-print "\t\t*              =============             *"
-print "\t\t*                                        *"
-print "\t\t* Experimental quantum chemisty software *"
-print "\t\t*                                        *"
-print "\t\t* Based on the pyqchem code written by   *"
-print "\t\t* Joshua Goings:                         *"
-print "\t\t* http://joshuagoings.com                *"
-print "\t\t* https://github.com/jjgoings/pyqchem    *"
-print "\t\t*                                        *"
-print "\t\t* Author:                                *"
-print "\t\t* Alexander Oleynichenko                 *"
-print "\t\t* Lomonosov Moscow State University      *"
-print "\t\t* alexvoleynichenko@gmail.com            *"
-print "\t\t******************************************"
+print "\t\t*******************************************"
+print "\t\t*              P Y Q C H E M              *"
+print "\t\t*              =============              *"
+print "\t\t*                                         *"
+print "\t\t* Experimental quantum chemistry software *"
+print "\t\t*                                         *"
+print "\t\t* Based on the pyqchem code written by    *"
+print "\t\t* Joshua Goings:                          *"
+print "\t\t* http://joshuagoings.com                 *"
+print "\t\t* https://github.com/jjgoings/pyqchem     *"
+print "\t\t*                                         *"
+print "\t\t* Author:                                 *"
+print "\t\t* Alexander Oleynichenko                  *"
+print "\t\t* Lomonosov Moscow State University       *"
+print "\t\t* alexvoleynichenko@gmail.com             *"
+print "\t\t*******************************************"
 print
 
 print "\n\t*** Begin quantum chemistry on:   " + inp_name
@@ -80,6 +81,10 @@ def read_input(file):
 
     inp = {}
     execfile(file, inp)
+
+    print '---------------------- echo of input file ----------------------'
+    os.system('cat ' + file)
+    print '---------------------- end of input file -----------------------'
 
     print '\n\tInput file data:'
     print '\t----------------'
@@ -173,11 +178,11 @@ ENUC,Nelec,dim,S,T,V,Hcore,twoe = __init_integrals__(LOCATION)
 print "\t*** Finished AO integrals evaluation\n"
 
 # do SCF iteration
-print "\t*** Begin SCF iteration, convergence requested: ",convergence,"a.u."
+print "\t*** Begin SCF, convergence requested: ",convergence,"a.u."
 EN,orbitalE,C,P,F = scf.scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS)
 
-print "Total E(RHF): ", EN+ENUC,"a.u."
-print "\t*** End of SCF Iteration\n"
+print "Total E(RHF): ", EN+ENUC," a.u."
+print "\t*** End of SCF\n"
 
 if do_ao2mo == True:
     ints,fs = ao2mo.transform_ao2mo(dim,twoe,C,orbitalE)
@@ -209,7 +214,7 @@ if do_ccsd == True:
     print "E(CCSD): {0:.8f}".format(ECCSD+ENUC+EN),"a.u."
     print "\t*** End CCSD calculation"
 
-elif do_ccsd == False:
+elif ao2mo == True and do_ccsd == False:
     # bad amplitudes for EOM if CCSD is off
     T1 = np.zeros((dim*2,dim*2))
     T2 = np.zeros((dim*2,dim*2,dim*2,dim*2))

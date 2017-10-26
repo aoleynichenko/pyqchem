@@ -4,8 +4,12 @@
 # McMurchie-Davidson algorithm is implemented.
 # Alexander Oleynichenko, 2017
 
+cimport cython
+cimport numpy as np
+
 import math
 import numpy as np
+import time
 from scipy.special import hyp1f1
 
 
@@ -29,8 +33,8 @@ class BasisFunction(object):
     def __init__(self,origin=[0.0,0.0,0.0],shell=(0,0,0),exps=[],coefs=[]):
         self.origin = np.asarray(origin)
         self.shell = shell
-        self.exps  = exps
-        self.coefs = coefs
+        self.exps  = np.array(exps)
+        self.coefs = np.array(coefs)
         self.norm = None
         self.normalize()
 
@@ -46,7 +50,7 @@ class BasisFunction(object):
                         fact2(2*n-1)/np.power(np.pi,1.5))
 
 
-def E(i,j,t,Qx,a,b):
+cdef double E(int i, int j, int t, double Qx, double a, double b):
     ''' Recursive definition of Hermite Gaussian coefficients.
         Returns a float.
         a: orbital exponent on Gaussian 'a' (e.g. alpha in the text)
@@ -56,6 +60,8 @@ def E(i,j,t,Qx,a,b):
            e.g. always zero for overlap integrals)
         Qx: distance between origins of Gaussian 'a' and 'b'
     '''
+    cdef double p, q
+
     p = a + b
     q = a*b/p
     if (t < 0) or (t > (i + j)):
@@ -254,6 +260,17 @@ def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
     Q = gaussian_product_center(c, C, d, D)  # C and D composite center
     RPQ = np.linalg.norm(P - Q)
 
+    # distances
+    A0B0 = A[0] - B[0]
+    A1B1 = A[1] - B[1]
+    A2B2 = A[2] - B[2]
+    C0D0 = C[0] - D[0]
+    C1D1 = C[1] - D[1]
+    C2D2 = C[2] - D[2]
+    P0Q0 = P[0] - Q[0]
+    P1Q1 = P[1] - Q[1]
+    P2Q2 = P[2] - Q[2]
+
     val = 0.0
     for t in xrange(l1 + l2 + 1):
         for u in xrange(m1 + m2 + 1):
@@ -261,15 +278,15 @@ def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
                 for tau in xrange(l3 + l4 + 1):
                     for nu in xrange(m3 + m4 + 1):
                         for phi in xrange(n3 + n4 + 1):
-                            val += E(l1, l2, t, A[0] - B[0], a, b) * \
-                                   E(m1, m2, u, A[1] - B[1], a, b) * \
-                                   E(n1, n2, v, A[2] - B[2], a, b) * \
-                                   E(l3, l4, tau, C[0] - D[0], c, d) * \
-                                   E(m3, m4, nu, C[1] - D[1], c, d) * \
-                                   E(n3, n4, phi, C[2] - D[2], c, d) * \
+                            val += E(l1, l2, t, A0B0, a, b) * \
+                                   E(m1, m2, u, A1B1, a, b) * \
+                                   E(n1, n2, v, A2B2, a, b) * \
+                                   E(l3, l4, tau, C0D0, c, d) * \
+                                   E(m3, m4, nu,  C1D1, c, d) * \
+                                   E(n3, n4, phi, C2D2, c, d) * \
                                    np.power(-1, tau + nu + phi) * \
                                    R(t + tau, u + nu, v + phi, 0, \
-                                     alpha, P[0] - Q[0], P[1] - Q[1], P[2] - Q[2], RPQ)
+                                     alpha, P0Q0, P1Q1, P2Q2, RPQ)
 
     val *= 2 * np.power(np.pi, 2.5) / (p * q * np.sqrt(p + q))
     return val
@@ -309,7 +326,6 @@ def gen_angmom_list(L):
 
 
 def calculate_ints(geom, basis, charge):
-    print 'integral evaluation...'
 
     # atom-centered basis set
     bfns = []
@@ -353,6 +369,7 @@ def calculate_ints(geom, basis, charge):
     print 'N(unique ERIs) = ',  (M**4+2*M**3+3*M**2+2*M)/8
     n_nonzero = 0
     count = 0
+    t1 = time.time()
     with open("eri.dat", "w") as f:
         for m in xrange(0, M):
             for n in xrange(m, M):
@@ -366,8 +383,10 @@ def calculate_ints(geom, basis, charge):
                         if abs(eri_mnpq) > 1e-12:
                             n_nonzero += 1
                             f.write("%3d%3d%3d%3d%15.8f\n" % (m+1, n+1, p+1, q+1, eri_mnpq))
+    t2 = time.time()
 
     print '# nonzero ERIS = ', n_nonzero
+    print 'Time per ERI = ', (t2-t1)/count, ' sec'
 
     # print evaluated integrals to files
     np.savetxt('s.dat', S)

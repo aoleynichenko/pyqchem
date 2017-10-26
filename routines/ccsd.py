@@ -57,23 +57,23 @@ def ccsd(Nelec,dim,fs,ints,convergence,printops,reuse_t1t2):
     # Make denominator arrays
     Dai = np.zeros((dim,dim))
     for a in range(Nelec,dim):
-      for i in range(0,Nelec):
-	Dai[a,i] = fs[i,i] - fs[a,a]
+        for i in range(0,Nelec):
+            Dai[a,i] = fs[i,i] - fs[a,a]
 
     Dabij = np.zeros((dim,dim,dim,dim))
     for a in range(Nelec,dim):
-      for b in range(Nelec,dim):
-	for i in range(0,Nelec):
-	  for j in range(0,Nelec):
-	    Dabij[a,b,i,j] = fs[i,i] + fs[j,j] - fs[a,a] - fs[b,b]
+        for b in range(Nelec,dim):
+            for i in range(0,Nelec):
+                for j in range(0,Nelec):
+                    Dabij[a,b,i,j] = fs[i,i] + fs[j,j] - fs[a,a] - fs[b,b]
 
     def taus(a,b,i,j):
-      taus = td[a,b,i,j] + 0.5*(ts[a,i]*ts[b,j] - ts[b,i]*ts[a,j])
-      return taus
+        taus = td[a,b,i,j] + 0.5*(ts[a,i]*ts[b,j] - ts[b,i]*ts[a,j])
+        return taus
 
     def tau(a,b,i,j):
-      tau = td[a,b,i,j] + ts[a,i]*ts[b,j] - ts[b,i]*ts[a,j]
-      return tau
+        tau = td[a,b,i,j] + ts[a,i]*ts[b,j] - ts[b,i]*ts[a,j]
+        return tau
 
     def updateintermediates(x):
       if x == True:

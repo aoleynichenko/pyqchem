@@ -184,6 +184,10 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS):
             FMO = np.dot(np.transpose(C), np.dot(F, C))
             printmat("Final Fock matrix in MO basis", FMO)
             print_mos(E,C,Nelec)
+            # mulliken
+            PS = np.dot(P,S)
+            printmat("Mulliken analysis matrix PS", PS)
+            print 'Nelec = ', np.trace(PS)
             break
         if j == 119:
             print "SCF not converged!"

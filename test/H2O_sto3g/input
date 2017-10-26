@@ -8,6 +8,6 @@ geom = [
 
 basis = 'sto3g'
 
-task = 'ccsd'
+task = 'scf'
 
 
