@@ -2,10 +2,14 @@
 #
 # Based on the excellent code of Joshua Goings: http://joshuagoings.com/
 # McMurchie-Davidson algorithm is implemented.
+# Optimized using Cython.
 # Alexander Oleynichenko, 2017
+
+# cython: initializedcheck=False, boundscheck=False, wraparound=False, overflowcheck.fold=False
 
 cimport cython
 cimport numpy as np
+from libc.math cimport exp, sqrt, pow, M_PI, erf
 
 import math
 import numpy as np
@@ -13,15 +17,28 @@ import time
 from scipy.special import hyp1f1
 
 
-cdef double PI = 3.1415926535897932384626433832795
-
+cdef double PI = M_PI
 
 cdef int fact2(int n):
     return reduce(int.__mul__, range(n, 0, -2), 1)
 
 
-cdef double boys(int n, double T):
-    return hyp1f1(n+0.5,n+1.5,-T)/(2.0*n+1.0)
+@cython.cdivision(True)
+cdef double boys(int n, double x):
+    cdef int n2 = 2*n
+    if x < 0.1:    # Taylor expansion & Gorner's algorithm
+        return 1.0/(n2+1) + x*(-1.0/(n2+3) + x*(0.5/(n2+5) + x*(-1.0/((n2+7)*6) \
+        + x*(1.0/((n2+9)*24) + x*(-1.0/((n2+11)*120) + x/((n2+13)*720))))))
+
+    if n == 0:
+        return 0.5*sqrt(PI/x)*erf(sqrt(x))
+    else:   # downward recursion - very bad!
+        return 0.5*((2.0*n-1.0)*boys(n-1, x)-exp(-x))/x
+
+
+# very slow (but clear!) implementation of Boys function using scipy
+#cdef double boys(int n, double T):
+#    return hyp1f1(n+0.5,n+1.5,-T)/(2.0*n+1.0)
 
 
 class BasisFunction(object):
@@ -47,12 +64,13 @@ class BasisFunction(object):
         '''
         l,m,n = self.shell
         # self.norm is a list of length equal to number primitives
-        self.norm = np.sqrt(np.power(2,2*(l+m+n)+1.5)*
+        self.norm = np.sqrt(pow(2,2*(l+m+n)+1.5)*
                         np.power(self.exps,l+m+n+1.5)/
                         fact2(2*l-1)/fact2(2*m-1)/
-                        fact2(2*n-1)/np.power(PI,1.5))
+                        fact2(2*n-1)/pow(PI,1.5))
 
 
+@cython.cdivision(True)  # to avoid division checking
 cdef double E(int i, int j, int t, double Qx, double a, double b):
     ''' Recursive definition of Hermite Gaussian coefficients.
         Returns a float.
@@ -70,9 +88,9 @@ cdef double E(int i, int j, int t, double Qx, double a, double b):
     if (t < 0) or (t > (i + j)):
         # out of bounds for t
         return 0.0
-    elif i == j == t == 0:
+    elif i + j + t == 0:
         # base case
-        return np.exp(-q*Qx*Qx) # K_AB
+        return exp(-q*Qx*Qx) # K_AB
     elif j == 0:
         # decrement index i
         return (1/(2*p))*E(i-1,j,t-1,Qx,a,b) - \
@@ -105,7 +123,7 @@ def overlap(a,lmn1,A,b,lmn2,B):
     S1 = E(l1,l2,0,A[0]-B[0],a,b)#,n[0],A[0]) # X
     S2 = E(m1,m2,0,A[1]-B[1],a,b)#,n[1],A[1]) # Y
     S3 = E(n1,n2,0,A[2]-B[2],a,b)#,n[2],A[2]) # Z
-    return S1*S2*S3*np.power(PI/(a+b),1.5)
+    return S1*S2*S3*pow(PI/(a+b),1.5)
 
 
 def int_S(a,b):
@@ -142,7 +160,7 @@ def kinetic(a,lmn1,A,b,lmn2,B):
     l2,m2,n2 = lmn2
     term0 = b*(2*(l2+m2+n2)+3)*\
                             overlap(a,(l1,m1,n1),A,b,(l2,m2,n2),B)
-    term1 = -2*np.power(b,2)*\
+    term1 = -2*pow(b,2)*\
                            (overlap(a,(l1,m1,n1),A,b,(l2+2,m2,n2),B) +
                             overlap(a,(l1,m1,n1),A,b,(l2,m2+2,n2),B) +
                             overlap(a,(l1,m1,n1),A,b,(l2,m2,n2+2),B))
@@ -168,6 +186,7 @@ def int_T(a,b):
     return t
 
 
+@cython.cdivision(True)
 cdef double R(int t, int u, int v, int n, double p, double PCx, double PCy, double PCz, double RPC):
     ''' Returns the Coulomb auxiliary Hermite integrals
         Returns a float.
@@ -184,7 +203,7 @@ cdef double R(int t, int u, int v, int n, double p, double PCx, double PCy, doub
     T = p*RPC*RPC
     val = 0.0
     if t == u == v == 0:
-        val += np.power(-2*p,n)*boys(n,T)
+        val += pow(-2*p,n)*boys(n,T)
     elif t == u == 0:
         if v > 1:
             val += (v-1)*R(t,u,v-2,n+1,p,PCx,PCy,PCz,RPC)
@@ -200,7 +219,8 @@ cdef double R(int t, int u, int v, int n, double p, double PCx, double PCy, doub
     return val
 
 
-def gaussian_product_center(a, A, b, B):
+@cython.cdivision(True)
+cdef inline gaussian_product_center(double a, A, double b, B):
     return (a*A+b*B)/(a+b)
 
 
@@ -297,15 +317,15 @@ def electron_repulsion(a, lmn1, A, b, lmn2, B, c, lmn3, C, d, lmn4, D):
                                    E(l3, l4, tau, C0D0, c, d) * \
                                    E(m3, m4, nu,  C1D1, c, d) * \
                                    E(n3, n4, phi, C2D2, c, d) * \
-                                   np.power(-1, tau + nu + phi) * \
+                                   pow(-1, tau + nu + phi) * \
                                    R(t + tau, u + nu, v + phi, 0, \
                                      alpha, P0Q0, P1Q1, P2Q2, RPQ)
 
-    val *= 2 * np.power(PI, 2.5) / (p * q * np.sqrt(p + q))
+    val *= 2 * pow(PI, 2.5) / (p * q * sqrt(p + q))
     return val
 
 
-def ERI(a,b,c,d):
+cdef double ERI(a,b,c,d):
      '''Evaluates overlap between two contracted Gaussians
         Returns float.
         Arguments:
@@ -356,7 +376,7 @@ def calculate_ints(geom, basis, charge):
             for sh in gen_angmom_list(b[0]):
                 bfns.append(BasisFunction(origin=(x,y,z), shell=sh, exps=b[1], coefs=b[2]))
 
-    M = len(bfns)
+    cdef int M = len(bfns)
     print 'AO basis dim = ', M
 
     S, T, V = np.zeros((M,M)), np.zeros((M,M)), np.zeros((M,M))
@@ -370,7 +390,7 @@ def calculate_ints(geom, basis, charge):
     enuc = 0.0
     for a in geom:
         for b in geom:
-            d = math.sqrt((a[1]-b[1])**2+(a[2]-b[2])**2+(a[3]-b[3])**2)
+            d = sqrt((a[1]-b[1])**2+(a[2]-b[2])**2+(a[3]-b[3])**2)
             if d > 0:  # exclude self-interaction
                 enuc += a[0]*b[0] / d
     enuc /= 2
@@ -384,15 +404,16 @@ def calculate_ints(geom, basis, charge):
 
     # only unique integrals will be evaluated
     print '# unique ERIs  = ',  (M**4+2*M**3+3*M**2+2*M)/8
-    n_nonzero = 0
-    count = 0
+    cdef int n_nonzero = 0
+    cdef int count = 0
+    cdef int m, n, p, q0, q
     t1 = time.time()
     with open("eri.dat", "w") as f:
-        for m in xrange(0, M):
-            for n in xrange(m, M):
-                for p in xrange(m, M):
+        for m in range(0, M, 1):
+            for n in range(m, M, 1):
+                for p in range(m, M, 1):
                     q0 = n if p == m else p
-                    for q in xrange(q0,M):
+                    for q in range(q0, M, 1):
                         eri_mnpq = ERI(bfns[m], bfns[n], bfns[p], bfns[q])
                         count += 1
                         if count % 5000 == 0:

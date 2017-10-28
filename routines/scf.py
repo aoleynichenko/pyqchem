@@ -209,7 +209,7 @@ def scf_iteration(convergence,ENUC,Nelec,dim,S,Hcore,twoe,printops,do_DIIS,geom,
             #printmat("Final Fock matrix in AO basis", F)
             FMO = np.dot(np.transpose(C), np.dot(F, C))
             #printmat("Final Fock matrix in MO basis", FMO)
-            print_mos(E,C,Nelec)
+            #print_mos(E,C,Nelec)
             # mulliken
             PS = np.dot(P,S)
             mulliken(PS,geom,bfns)

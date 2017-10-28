@@ -7,6 +7,6 @@ geom = [
 
 basis = 'ccpvdz'
 charge = 1
-task = 'ccsd'
+task = 'scf'
 
 
