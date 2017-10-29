@@ -2,6 +2,8 @@
 
 A general-purpose experimental quantum chemistry program.
 
+Wiki pages: https://github.com/aoleynichenko/pyqchem/wiki
+
 Features:
 <ul>
 <li>Restricted Hartree-Fock</li>
